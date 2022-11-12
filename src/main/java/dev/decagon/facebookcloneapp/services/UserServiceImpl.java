@@ -14,6 +14,8 @@ import java.util.List;
 public class UserServiceImpl implements UserService {
 
     private  final UserRepository userRepository;
+    @Autowired
+    private Mapper mapperService;
 
     @Autowired
     public UserServiceImpl(UserRepository userRepository) {
@@ -22,7 +24,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User get(Integer id) {
-        return userRepository.getById(id);
+        return userRepository.findById(id).get();
     }
 
     @Override
@@ -34,12 +36,12 @@ public class UserServiceImpl implements UserService {
     public UserDTO update(Integer userId, UserDTO userDTO){
        User user=userRepository.findById(userId)
                .orElseThrow(()->new EntityRepositoryExeption("User not found"));
-       return Mapper.userToUserDto(user);
+       return mapperService.userToUserDto(user);
 
     }
     @Override
     public User save(UserDTO user) {
-       return userRepository.save(Mapper.userDTOtoUserMapper(user));
+       return userRepository.save(mapperService.userDTOtoUserMapper(user));
 
     }
 

@@ -1,4 +1,4 @@
-package dev.decagon.facebookcloneapp;
+package dev.decagon.facebookcloneapp.util;
 
 
 import dev.decagon.facebookcloneapp.dto.*;
@@ -7,9 +7,8 @@ import dev.decagon.facebookcloneapp.model.Login;
 import dev.decagon.facebookcloneapp.model.Post;
 import dev.decagon.facebookcloneapp.model.User;
 import dev.decagon.facebookcloneapp.repositories.CommentRepository;
+import dev.decagon.facebookcloneapp.repositories.PostRepository;
 import dev.decagon.facebookcloneapp.repositories.UserRepository;
-import dev.decagon.facebookcloneapp.services.CommentService;
-import dev.decagon.facebookcloneapp.services.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,17 +18,25 @@ import java.util.stream.Collectors;
 
 @Service
 public class Mapper {
-    @Autowired
-    private  static CommentRepository commentRepository;
-    @Autowired
-    private static UserRepository userRepository;
-    @Autowired
-    private  static PostService postService;
-    @Autowired
-    private  static CommentService commentService;
+
+    private   CommentRepository commentRepository;
+
+    private  UserRepository userRepository;
+
+    private   PostRepository postRepository;
 
 
-    public  static Login loginDTOtoLoginMapper(LoginDTO loginDTO){
+    @Autowired
+    public Mapper(CommentRepository commentRepository, UserRepository userRepository, PostRepository postRepository) {
+        this.commentRepository = commentRepository;
+        this.userRepository = userRepository;
+        this.postRepository = postRepository;
+    }
+
+
+
+
+    public Login loginDTOtoLoginMapper(LoginDTO loginDTO){
         return Login.builder()
                 .email(loginDTO.getEmail())
                 .password(loginDTO.getPassword())
@@ -37,7 +44,7 @@ public class Mapper {
                 .build();
     }
 
-    public  static List<CommentDTO> commentMapping(List<Comment> comments){
+    public List<CommentDTO> commentMapping(List<Comment> comments){
         return comments.stream()
                 .map((c -> {
                     return CommentDTO.builder()
@@ -53,7 +60,7 @@ public class Mapper {
                 .collect(Collectors.toList());
     }
 
-    public static List<PostResponse> postToViewPostMapper(List<Post> posts){
+    public List<PostResponse> postToViewPostMapper(List<Post> posts){
         return posts.stream()
                 .map((post -> {
                     return PostResponse.builder()
@@ -62,24 +69,24 @@ public class Mapper {
                             .userName(post.getUserName())
                             .textBody(post.getTextBody())
                             .likes(post.getLikes())
-                            .comments(postService.getCommentsPostById(post.getId()))
+                            .comments(commentRepository.findByPostId(post.getId()))
                             .build();
                 }))
                 .collect(Collectors.toList());
 
 
     }
-    public  static PostResponse postToViewPostMapper(Post post){
+    public PostResponse postToViewPostMapper(Post post){
         return PostResponse.builder()
                 .id(post.getId())
                 .userId(post.getUserId())
                 .userName(post.getUserName())
                 .textBody(post.getTextBody())
                 .likes(post.getLikes())
-                .comments(commentService.getCommentsByPostId(post.getId()))
+                .comments(commentRepository.findByPostId(post.getId()))
                 .build();
     }
-    public  static User userDTOtoUserMapper(UserDTO userDTO){
+    public User userDTOtoUserMapper(UserDTO userDTO){
         return User.builder()
                 .name(userDTO.getName())
                 .email(userDTO.getEmail())
@@ -87,7 +94,7 @@ public class Mapper {
                 .build();
     }
 
-    public static UserDTO userToUserDto(User user) {
+    public UserDTO userToUserDto(User user) {
         return UserDTO.builder()
                 .name(user.getName())
                 .email(user.getEmail())
@@ -95,7 +102,7 @@ public class Mapper {
                 .build();
     }
 
-    public static Comment commentMapper(CommentDTO commentDTO) {
+    public Comment commentMapper(CommentDTO commentDTO) {
         return Comment.builder()
                 .likes(commentDTO.getLikes())
                 .postId(commentDTO.getPostId())
@@ -104,7 +111,7 @@ public class Mapper {
                 .build();
     }
 
-    public static Post postDtoToPost(PostDTO postDTO) {
+    public Post postDtoToPost(PostDTO postDTO) {
         return Post.builder()
                 .userName(postDTO.getUserName())
                 .userId(postDTO.getUserId())
@@ -113,7 +120,7 @@ public class Mapper {
                 .build();
     }
 
-    public static PostDTO postToPostDto(Post post) {
+    public PostDTO postToPostDto(Post post) {
         return PostDTO.builder()
                 .userName(post.getUserName())
                 .id(post.getId())

@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}">
+
+</head>
+<div class="listOfComments" th:each="comment : ${post.getComments()}">
+    <div class="template">
+        <section class="commentSection">
+            <div class="comment-info">
+                <h4 th:text="${comment.getUser().getFirstName() +' '+ comment.getUser().getLastName()}"></h4>
+                <p th:text="${comment.getTimestamp()}"></p>
+            </div>
+            <div class="textForm">
+                <form th:action="@{/comments/delete}" th:method="DELETE">
+                    <div th:if="${session.containsKey('user') && comment.getUser().getId().equals(session.user.getId())}">
+                        <input type="hidden" name="commentId" th:value="${comment.getCommentId()}"/>
+                        <input type="hidden" name="userId" th:value="${comment.getUser().getId()}"/>
+                        <input type="hidden" name="postId" th:value="${comment.getPost().getPostId()}"/>
+                        <button class="icon" type="submit"><i class='bx bx-trash-alt'></i></button>
+                    </div>
+                </form>
+                <form th:action="@{/commments/edit}" th:method="POST">
+                    <div th:if="${session.containsKey('user') && comment.getUser().getId().equals(session.user.getId())}">
+                        <button class="icon" type="submit"><i class='bx bxs-edit-alt'></i></button>
+                    </div>
+                </form>
+            </div>
+        </section>
+        <div th:if="${session.user.getId().equals(comment.getUser().getId())}">
+            <div th:if="${session.showInputField == true}">
+                <form th:action="@{/comments/update}" th:method="PUT">
+                    <input id="comment" type="text" name="comment" th:value="${comment.getComment()}" />
+                    <input type="hidden" name="postId" th:value="${comment.getPost().getPostId()}" />
+                    <input type="hidden" name="userId" th:value="${session.user.getId()}" />
+                </form>
+            </div>
+        </div>
+        <div th:if="${session.showInputField == false}">
+            <p class="bottom" th:text="${comment.getComment()}"></p>
+        </div>
+    </div>
+</div>
+<link th:insert="./homeview/commentform.html" data-th-attr="data-groupid=${post}, data-groupname=${comment}">
+</html>
+
+
+
+
+

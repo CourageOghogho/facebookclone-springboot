@@ -12,6 +12,8 @@ import java.util.List;
 @Service
 public class CommentServiceImpl implements CommentService {
     final private CommentRepository commentRepository;
+    @Autowired
+    private Mapper mapperService;
 
 
     @Autowired
@@ -21,7 +23,7 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     public CommentDTO save(CommentDTO commentDTO){
-        Comment comment=commentRepository.save(Mapper.commentMapper(commentDTO));
+        Comment comment=commentRepository.save(mapperService.commentMapper(commentDTO));
         commentDTO.setCommentId(comment.getCommentId());
         return  commentDTO;
     }

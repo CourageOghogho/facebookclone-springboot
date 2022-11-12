@@ -13,6 +13,8 @@ import java.util.List;
 @Service
 public class PostServiceImpl implements PostService {
 
+    @Autowired
+    private Mapper mapperService;
     private final PostRepository postRepository;
     private final CommentRepository commentRepository;
 
@@ -24,7 +26,7 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public PostDTO save(PostDTO postDTO) {
-        Post post=postRepository.save(Mapper.postDtoToPost(postDTO));
+        Post post=postRepository.save(mapperService.postDtoToPost(postDTO));
         postDTO.setId(post.getId());
         return postDTO;
     }
@@ -61,7 +63,7 @@ public class PostServiceImpl implements PostService {
         Post post=postRepository.findById(postId).get();
         post.setTextBody(message);
 
-        return Mapper.postToPostDto(postRepository.saveAndFlush(post));
+        return mapperService.postToPostDto(postRepository.saveAndFlush(post));
     }
 
     @Override

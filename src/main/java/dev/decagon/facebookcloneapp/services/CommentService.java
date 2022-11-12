@@ -3,9 +3,10 @@ package dev.decagon.facebookcloneapp.services;
 import dev.decagon.facebookcloneapp.dto.CommentDTO;
 import dev.decagon.facebookcloneapp.model.Comment;
 import dev.decagon.facebookcloneapp.model.User;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
-
+@Service
 public interface CommentService {
 
     List<User> likedAComment(Integer postId);

@@ -16,6 +16,8 @@ import java.util.Objects;
 public class LoginServiceImpl implements LoginService {
     private  final UserRepository userRepository;
     private  final LoginRepository loginRepository;
+    @Autowired
+    private  Mapper mapperService;
 
     @Autowired
     public LoginServiceImpl(UserRepository userRepository, LoginRepository loginRepository) {
@@ -36,7 +38,7 @@ public class LoginServiceImpl implements LoginService {
 
     @Override
     public Login save(LoginDTO login) {
-        return loginRepository.save(Mapper.loginDTOtoLoginMapper(login));
+        return loginRepository.save(mapperService.loginDTOtoLoginMapper(login));
     }
 
     @Override

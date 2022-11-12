@@ -41,8 +41,10 @@ public class AuthController {
     }
 
     @GetMapping("/logout")
-    public  String loginOut(){
-
+    public  String loginOut(HttpSession session){
+        User loggedUser=(User)session.getAttribute("user");
+        if(loggedUser!=null)
+            session.removeAttribute("user");
         return "login";
     }
 
@@ -51,15 +53,5 @@ public class AuthController {
 
         return "login";
     }
-//    @GetMapping("/home")
-//    public ModelAndView getHome(){
-//        ArrayList<Integer> nums =new ArrayList<>();
-//        for (int i=0;i<14;i++){
-//            nums.add(i);
-//        }
-//        ModelAndView mav=new ModelAndView();
-//        mav.addObject("nums",nums);
-//        mav.setViewName("home");
-//        return mav;
-//    }
+
 }
