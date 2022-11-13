@@ -61,7 +61,7 @@ public class Mapper {
     }
 
     public List<PostResponse> postToViewPostMapper(List<Post> posts){
-        return posts.stream()
+        List<PostResponse>responses= posts.stream()
                 .map((post -> {
                     return PostResponse.builder()
                             .id(post.getId())
@@ -69,13 +69,43 @@ public class Mapper {
                             .userName(post.getUserName())
                             .textBody(post.getTextBody())
                             .likes(post.getLikes())
-                            .comments(commentRepository.findByPostId(post.getId()))
-                            .build();
+                            .comments(commentToCommentDTPMapper(commentRepository.findByPostId(post.getId()))).build();
+
                 }))
                 .collect(Collectors.toList());
-
+        responses.sort((res1,res2)->res2.getId()-res1.getId());
+        return responses;
 
     }
+
+    public List<CommentDTO> commentToCommentDTPMapper(List<Comment> comments) {
+        List<CommentDTO> commentDTOS=comments.stream()
+                .map(comment ->{
+                    return CommentDTO.builder()
+                        .userId(comment.getUserId())
+                        .commentId(comment.getCommentId())
+                        .textBody(comment.getTextBody())
+                        .likes(comment.getLikes())
+                        .postId(comment.getPostId())
+                        .userName(userRepository.findById(comment.getUserId()).get().getName())
+                        .build();}
+                )
+                .collect(Collectors.toList());
+        commentDTOS.sort((cm1,cm2)-> cm2.getCommentId()- cm1.getCommentId());
+        return commentDTOS;
+    }
+
+    public CommentDTO commentToCommentDTOMapper(Comment comment){
+        return CommentDTO.builder()
+                .userId(comment.getUserId())
+                .commentId(comment.getCommentId())
+                .textBody(comment.getTextBody())
+                .likes(comment.getLikes())
+                .postId(comment.getPostId())
+                .userName(userRepository.findById(comment.getUserId()).get().getName())
+                .build();
+    }
+
     public PostResponse postToViewPostMapper(Post post){
         return PostResponse.builder()
                 .id(post.getId())
@@ -83,7 +113,7 @@ public class Mapper {
                 .userName(post.getUserName())
                 .textBody(post.getTextBody())
                 .likes(post.getLikes())
-                .comments(commentRepository.findByPostId(post.getId()))
+                .comments(commentToCommentDTPMapper(commentRepository.findByPostId(post.getId())))
                 .build();
     }
     public User userDTOtoUserMapper(UserDTO userDTO){

@@ -1,6 +1,5 @@
 package dev.decagon.facebookcloneapp.dto;
 
-import dev.decagon.facebookcloneapp.model.Comment;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -18,5 +17,5 @@ public class PostResponse {
     private  String textBody;
     private  String userName;
     private Integer userId;
-    private List<Comment> comments;
+    private List<CommentDTO> comments;
 }

@@ -17,19 +17,20 @@ public class CommentController {
     private CommentService commentService;
 
     @PostMapping("/new")
-    public ModelAndView createComment(@RequestParam("texboy") String textBody, HttpSession session){
-        ModelAndView mav=new ModelAndView();
+    public String createComment(@RequestParam("postid") Integer postId,@RequestParam("textboy") String textBody, HttpSession session){
+        if (textBody==null) return "redirect:/home";
+        if (textBody.isEmpty()) return "redirect:/home";
         User user=(User) session.getAttribute("user");
         commentService.save(CommentDTO.builder()
                 .userId(user.getId())
+                .postId(postId)
                 .textBody(textBody)
                 .userName(user.getName())
                 .likes(0)
                 .build()
         );
-        mav.addObject("comments",commentService.getAll());
-        mav.setViewName("comments");
-        return mav;
+
+        return "redirect:/home";
     }
 
     @DeleteMapping("/{id}")

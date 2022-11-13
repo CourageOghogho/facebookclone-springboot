@@ -182,7 +182,7 @@
         <div class="card">
           <div class="card-header post__top">
             <div class="row post__topInfo">
-              <h3 th:text="${tempPost.getUserName()}" class="card-title poster"></h3>
+              <h2 th:text="${tempPost.getUserName()}" class="card-title poster"></h2>
             </div>
           </div>
           <div class="card-body">
@@ -191,25 +191,51 @@
             </div>
             <div class="post__options">
               <div class="post__option">
-                <span class="material-icons"> thumb_up </span>
-                <p th:text="${tempPost.getLikes()}"></p>
+                <a th:href="@{'/posts/like/?id='+${tempPost.getId()}}" ><span class="material-icons"> thumb_up </span>
+                  <p th:text="${tempPost.getLikes()}"></p></a>
               </div>
 
               <div class="post__option">
-                <span class="material-icons"> chat_bubble_outline </span>
-                <p th:text="${tempPost.getComments().size()}"></p></a>
+               <span class="material-icons"> chat_bubble_outline </span>
+                <p th:text="${tempPost.getComments().size()}"></p>
               </div>
 
               <div class="post__option">
-                <span class="material-icons"> edit </span>
-                <p>Edit</p>
+                <a th:href="@{'/posts/edit/?id='+${tempPost.getId()}}"><span class="material-icons"> edit </span>
+                <p>Edit</p></a>
               </div>
 
               <div class="post__option">
-                <span class="material-icons"> delete </span>
-                <p>Delete</p>
+                <a th:href="@{'/posts/delete/?id='+${tempPost.getId()}}"><span class="material-icons"> delete </span>
+                <p>Delete</p></a>
               </div>
             </div>
+            <hr>
+            <br>
+            <th:block th:each="comment : ${tempPost.getComments()}">
+            <div class="card-body">
+              <div class="row">
+                <h5 th:text="${comment.getUserName()}"></h5>
+              </div>
+              <div class="row">
+                <p th:text="${comment.getTextBody()}">Text Body comes here</p>
+              </div>
+              <hr>
+            </div>
+            </th:block>
+
+            <div row>
+              <form action="comments/new" method="post">
+                <div class="">
+                  <textarea class="form-control" name="textboy" id="textboy"></textarea><br>
+                  <input type="submit" value="Post Comment" class="btn btn-primary">
+                  <input type="hidden" th:value="${tempPost.getId()}" name="postid" id="postid">
+                </div>
+              </form>
+            </div>
+
+
+
           </div>
 
         </div>
