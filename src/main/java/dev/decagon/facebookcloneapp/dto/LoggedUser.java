@@ -12,4 +12,5 @@ import lombok.*;
 public class LoggedUser {
     private String email;
     private String password;
+    // checking
 }
